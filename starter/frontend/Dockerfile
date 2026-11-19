@@ -1,24 +1,24 @@
-FROM  public.ecr.aws/docker/library/node:18.14.2-alpine3.17
+
+# Stage 1: Build React application
+FROM node:18.14.2-alpine3.17 AS build
 
 ARG REACT_APP_MOVIE_API_URL
 ENV REACT_APP_MOVIE_API_URL=${REACT_APP_MOVIE_API_URL}
 
 WORKDIR /app
 
-# Copy dependdency files
 COPY package*.json ./
-
-# Install packages
 RUN npm ci
 
-# Copy code
 COPY . .
-
-# Build the app
 RUN npm run build
 
-# Expose the port used by the React app
-EXPOSE 3000
+# Stage 2: Serve using Nginx
+FROM nginx:alpine
 
-# Start the React app when the container starts
-CMD ["npm", "run", "serve"]
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
