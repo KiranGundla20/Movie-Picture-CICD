@@ -59,6 +59,7 @@ jobs:
       - name: Run tests
         run: CI=true npm test -- --watchAll=false
 
+  
   build:
     needs:
       - lint
@@ -73,6 +74,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: starter/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: CI=true npm run test -- --watchAll=false
 
       - name: Build frontend Docker image
         run: docker build -t mp-frontend:latest .
