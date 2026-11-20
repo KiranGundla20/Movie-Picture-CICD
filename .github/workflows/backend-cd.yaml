@@ -1,5 +1,5 @@
 
-name: Backend CD
+name: Backend Continuous Deployment
 
 on:
   push:
