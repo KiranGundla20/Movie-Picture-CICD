@@ -86,7 +86,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: CI=true npm run test -- --watchAll=false
+        run: npm run test
 
       - name: Build frontend Docker image
         run: docker build -t mp-frontend:latest .
